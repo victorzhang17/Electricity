@@ -2,7 +2,9 @@ package com.hik.tlsp.electricity.handler;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hik.tlsp.electricity.model.ElectricityDetail;
+import com.hik.tlsp.electricity.service.DataPushService;
 import com.hik.tlsp.electricity.service.DataTransportService;
+import com.hik.tlsp.electricity.service.impl.DataPushServiceImpl;
 import com.hik.tlsp.electricity.service.impl.DataTransportServiceImpl;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -30,9 +32,11 @@ public class ElectricityServerHandler extends ChannelInboundHandlerAdapter {
     private FullHttpRequest request;
 
     private DataTransportService dataTransportService;
+    private DataPushService dataPushService;
 
     public ElectricityServerHandler() {
         dataTransportService = new DataTransportServiceImpl();
+        dataPushService = new DataPushServiceImpl();
     }
 
     @Override
@@ -65,6 +69,7 @@ public class ElectricityServerHandler extends ChannelInboundHandlerAdapter {
         JSONObject json = JSONObject.parseObject(jsonStr);
         ElectricityDetail electricityDetail = JSONObject.toJavaObject(json, ElectricityDetail.class);
         if (saveElectricityDetail2DB(electricityDetail)) {
+            dataPushService.push(electricityDetail);
             return TRASPORT_TO_HIK_SUCCESS;
         } else {
             return TRASPORT_TO_HIK_ERROR;

@@ -44,7 +44,6 @@ public class DataTransportServiceImpl implements DataTransportService {
     }
 
     private void operationElectricityDetail4statement(ElectricityDetail electricityDetail, PreparedStatement statement) throws SQLException {
-        Enterprise enterprise = electricityDetail.getEnterprise();
         statement.setString(1, CommonUtil.createUUID());
         statement.setString(2, electricityDetail.getStationName());
         statement.setString(3, electricityDetail.getStationId());
@@ -57,6 +56,8 @@ public class DataTransportServiceImpl implements DataTransportService {
         statement.setString(10, electricityDetail.getAlarmLevel());
         statement.setString(11, electricityDetail.getDetailMetricItem());
         statement.setString(12, electricityDetail.getAlarmRuleId());
+
+        Enterprise enterprise = electricityDetail.getEnterprise();
         statement.setString(13, enterprise.getEnterpriseName());
         statement.setString(14, enterprise.getEnterpriseAddress());
         statement.setString(15, enterprise.getLegalPersonName());
