@@ -1,6 +1,5 @@
 package com.hik.tlsp.electricity;
 
-import com.hik.tlsp.electricity.exception.ElectricityException;
 import io.netty.util.internal.logging.InternalLogger;
 import io.netty.util.internal.logging.InternalLoggerFactory;
 
@@ -10,7 +9,7 @@ import io.netty.util.internal.logging.InternalLoggerFactory;
  * Created by zhangwei(zhangwei@cetiti.com) on 2017-7-28.
  */
 public class ElectricityTransportation {
-    public static InternalLogger logger = InternalLoggerFactory.getInstance(ElectricityServer.class);
+    private static InternalLogger logger = InternalLoggerFactory.getInstance(ElectricityTransportation.class);
     private static final int DEFAULT_PORT = 8899;
 
     public static void main(String[] args) {
@@ -25,7 +24,7 @@ public class ElectricityTransportation {
             try {
                 port = Integer.valueOf(args[0]);
             } catch (NumberFormatException e) {
-                throw new ElectricityException("Invalid port, please use default port 8899");
+                logger.info("端口范围为0-65535, 请使用默认端口8899");
             }
         }
         return port;

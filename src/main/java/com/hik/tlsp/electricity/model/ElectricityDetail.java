@@ -13,12 +13,16 @@ public class ElectricityDetail {
     private String stationId;
     private String monitoredObjectName;
     private String monitoredObjectId;
-    private String timeStamp;
+    private long timeStamp;
     private String alarmName;
     private String desc;
-    private String alarmLevelCH;
+    private int alarmLevelCh;
     private String alarmLevel;
     private String detailMetricItem;
     private String alarmRuleId;
-    private Enterprise enterprise;
+    private String stationAddress;
+    private String contactPersonName;
+    private String phone;
+    private String lontitude;
+    private String latititude;
 }

@@ -15,4 +15,5 @@ public class CommonUtilTest {
     public void testSysDate(){
         System.out.println(new Date());
     }
+
 }

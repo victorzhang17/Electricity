@@ -1,6 +1,5 @@
 package com.hik.tlsp.electricity;
 
-import com.hik.tlsp.electricity.exception.ElectricityException;
 import com.hik.tlsp.electricity.handler.ElectricityServerInitializer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -18,11 +17,9 @@ import io.netty.util.internal.logging.InternalLoggerFactory;
  * Created by zhangwei(zhangwei@cetiti.com) on 2017-7-28.
  */
 public class ElectricityServer {
-
     public static InternalLogger logger = InternalLoggerFactory.getInstance(ElectricityServer.class);
 
     public void start(int port) {
-
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup();
 
@@ -41,14 +38,13 @@ public class ElectricityServer {
         }
     }
 
-    private void syncChannel(ServerBootstrap serverBootstrap, int port){
+    private void syncChannel(ServerBootstrap serverBootstrap, int port) {
         try {
             ChannelFuture channelFuture = serverBootstrap.bind(port).sync();
-            logger.info("port bind success");
+            logger.info("端口绑定成功");
             channelFuture.channel().closeFuture().sync();
         } catch (InterruptedException e) {
-            logger.error("port bind error");
-            throw new ElectricityException("port interrupted");
+           logger.error("服务器端口被使用");
         }
     }
 }

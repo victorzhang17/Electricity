@@ -1,9 +1,7 @@
 package com.hik.tlsp.electricity.service.impl;
 
 import com.alibaba.druid.pool.DruidPooledConnection;
-import com.hik.tlsp.electricity.exception.ElectricityException;
 import com.hik.tlsp.electricity.model.ElectricityDetail;
-import com.hik.tlsp.electricity.model.Enterprise;
 import com.hik.tlsp.electricity.service.DataTransportService;
 import com.hik.tlsp.electricity.util.CommonUtil;
 import com.hik.tlsp.electricity.util.JdbcPoolUtil;
@@ -21,23 +19,19 @@ public class DataTransportServiceImpl implements DataTransportService {
      * @param electricityDetail
      * @return 插入成功返回true，失败返回false
      */
-    public int insert(ElectricityDetail electricityDetail) {
+    public int insert(ElectricityDetail electricityDetail) throws SQLException {
         JdbcPoolUtil jdbcPoolUtil = JdbcPoolUtil.getDruidPoolUtilInstance();
-        DruidPooledConnection connection = jdbcPoolUtil.getConnection();
+        DruidPooledConnection connection = null;
         PreparedStatement statement = null;
         int flag;
 
         try {
-            connection.setAutoCommit(false);
-            String sql = "INSERT  INTO ZHONGHENG_ELECTRICITY_WARN VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            connection = jdbcPoolUtil.getConnection();
+            String sql = "INSERT  INTO ZHONGHENG_ELECTRICITY_WARN VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             statement = connection.prepareStatement(sql);
             operationElectricityDetail4statement(electricityDetail, statement);
             flag = statement.executeUpdate();
-            connection.commit();
-        } catch (SQLException e) {
-            jdbcPoolUtil.rollback(connection);
-            throw new ElectricityException("数据库插入操作失败");
-        } finally {
+        }  finally {
             jdbcPoolUtil.close(statement, connection);
         }
         return flag;
@@ -49,20 +43,17 @@ public class DataTransportServiceImpl implements DataTransportService {
         statement.setString(3, electricityDetail.getStationId());
         statement.setString(4, electricityDetail.getMonitoredObjectName());
         statement.setString(5, electricityDetail.getMonitoredObjectId());
-        statement.setLong(6, Long.parseLong(electricityDetail.getTimeStamp()));
+        statement.setLong(6, electricityDetail.getTimeStamp());
         statement.setString(7, electricityDetail.getAlarmName());
         statement.setString(8, electricityDetail.getDesc());
-        statement.setString(9, electricityDetail.getAlarmLevelCH());
+        statement.setInt(9, electricityDetail.getAlarmLevelCh());
         statement.setString(10, electricityDetail.getAlarmLevel());
         statement.setString(11, electricityDetail.getDetailMetricItem());
         statement.setString(12, electricityDetail.getAlarmRuleId());
-
-        Enterprise enterprise = electricityDetail.getEnterprise();
-        statement.setString(13, enterprise.getEnterpriseName());
-        statement.setString(14, enterprise.getEnterpriseAddress());
-        statement.setString(15, enterprise.getLegalPersonName());
-        statement.setString(16, enterprise.getPhone());
-        statement.setString(17, enterprise.getLontitude());
-        statement.setString(18, enterprise.getLatititude());
+        statement.setString(13, electricityDetail.getStationAddress());
+        statement.setString(14, electricityDetail.getContactPersonName());
+        statement.setString(15, electricityDetail.getPhone());
+        statement.setString(16, electricityDetail.getLontitude());
+        statement.setString(17, electricityDetail.getLatititude());
     }
 }

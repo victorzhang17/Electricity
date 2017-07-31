@@ -13,6 +13,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import static com.hik.tlsp.electricity.util.ErrorCode.DATASOURCE_SETTING_ERROR;
+
 /**
  * 使用Druid连接池Jdbc工具类
  * Created by zhangwei(zhangwei@cetiti.com) on 2017-7-29.
@@ -24,14 +26,13 @@ public class JdbcPoolUtil {
     private static DruidDataSource dataSource = null;
     private static final String JDBC_LOCATION = "/jdbcPool.properties";
 
+
     static {
         try {
             properties.load(JdbcPoolUtil.class.getResourceAsStream(JDBC_LOCATION));
             dataSource = (DruidDataSource) DruidDataSourceFactory.createDataSource(properties);
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error("JdbcPoolUtil can not find jdbcPool.properties");
-            throw new ElectricityException("数据库连接池初始化错误");
+            throw new ElectricityException("数据库连接池初始化配置错误", DATASOURCE_SETTING_ERROR);
         }
     }
 
@@ -46,60 +47,38 @@ public class JdbcPoolUtil {
         return JdbcPoolUtilHolder.instance;
     }
 
-    public DruidPooledConnection getConnection() {
+    public DruidPooledConnection getConnection() throws SQLException {
         DruidPooledConnection connection;
-        try {
-            connection = dataSource.getConnection();
-        } catch (SQLException e) {
-            logger.error("Datasource can not get connection");
-            throw new ElectricityException("数据库连接失败");
-        }
-        logger.info("DataSource get connection successful");
+        connection = dataSource.getConnection();
+
+        logger.info("数据源成功获得连接");
         return connection;
     }
 
-    public void close(Connection connection) {
-        try {
-            if (connection != null) {
-                connection.close();
-            }
-        } catch (SQLException e) {
-            logger.error("DataBase connection can not close");
-            throw new ElectricityException("数据库连接没有成功关闭");
+    public void close(Connection connection) throws SQLException {
+        if (connection != null) {
+            connection.close();
         }
-        logger.info("DataBase connection closed success");
+        logger.info("数据库连接成功关闭");
     }
 
-    public void close(PreparedStatement statement, Connection connection) {
+    public void close(PreparedStatement statement, Connection connection) throws SQLException {
         try {
             if (statement != null)
                 statement.close();
-        } catch (SQLException e) {
-            logger.error("PreparedStatement can not close");
-            throw new ElectricityException("数据库查询没有成功关闭");
         } finally {
             close(connection);
         }
     }
 
-    public void close(ResultSet resultSet, PreparedStatement statement, Connection connection) {
+    public void close(ResultSet resultSet, PreparedStatement statement, Connection connection) throws SQLException {
         try {
             if (resultSet != null) {
                 resultSet.close();
             }
-        } catch (SQLException e) {
-            logger.error("ResultSet can not close");
-            throw new ElectricityException("数据库结果集没有成功关闭");
         } finally {
             close(statement, connection);
         }
     }
 
-    public void rollback(Connection connection){
-        try {
-            connection.rollback();
-        } catch (SQLException e) {
-            logger.info("database rollback");
-        }
-    }
 }

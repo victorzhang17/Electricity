@@ -15,7 +15,7 @@ import java.net.URL;
  * 
  */
 @WebServiceClient(name = "WbsIssueImplService", 
-                  wsdlLocation = "http://60.191.18.40:9010/webService/wbsIssue?wsdl",
+                  wsdlLocation = "http://115.236.101.205:8011/webService/wbsIssue?wsdl",
                   targetNamespace = "http://impl.service.webService.issue.plugin.tianque.com/") 
 public class WbsIssueImplService extends Service {
 
@@ -26,11 +26,11 @@ public class WbsIssueImplService extends Service {
     static {
         URL url = null;
         try {
-            url = new URL("http://60.191.18.40:9010/webService/wbsIssue?wsdl");
+            url = new URL("http://115.236.101.205:8011/webService/wbsIssue?wsdl");
         } catch (MalformedURLException e) {
             java.util.logging.Logger.getLogger(WbsIssueImplService.class.getName())
                 .log(java.util.logging.Level.INFO, 
-                     "Can not initialize the default wsdl from {0}", "http://60.191.18.40:9010/webService/wbsIssue?wsdl");
+                     "Can not initialize the default wsdl from {0}", "http://115.236.101.205:8011/webService/wbsIssue?wsdl");
         }
         WSDL_LOCATION = url;
     }
