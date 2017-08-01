@@ -20,12 +20,11 @@ import static com.hik.tlsp.electricity.util.ErrorCode.DATASOURCE_SETTING_ERROR;
  * Created by zhangwei(zhangwei@cetiti.com) on 2017-7-29.
  */
 public class JdbcPoolUtil {
+    private static InternalLogger logger = InternalLoggerFactory.getInstance(JdbcPoolUtil.class);
 
-    public static InternalLogger logger = InternalLoggerFactory.getInstance(JdbcPoolUtil.class);
     private static Properties properties = new Properties();
     private static DruidDataSource dataSource = null;
     private static final String JDBC_LOCATION = "/jdbcPool.properties";
-
 
     static {
         try {
@@ -48,9 +47,7 @@ public class JdbcPoolUtil {
     }
 
     public DruidPooledConnection getConnection() throws SQLException {
-        DruidPooledConnection connection;
-        connection = dataSource.getConnection();
-
+        DruidPooledConnection connection = dataSource.getConnection();
         logger.info("数据源成功获得连接");
         return connection;
     }
@@ -80,5 +77,4 @@ public class JdbcPoolUtil {
             close(statement, connection);
         }
     }
-
 }

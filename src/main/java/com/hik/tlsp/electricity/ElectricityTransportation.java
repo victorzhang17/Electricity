@@ -1,32 +1,50 @@
 package com.hik.tlsp.electricity;
 
+import com.hik.tlsp.electricity.handler.ElectricityServerInitializer;
+import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 import io.netty.util.internal.logging.InternalLogger;
 import io.netty.util.internal.logging.InternalLoggerFactory;
 
 /**
- * 中恒——中电——天阙
- * 电力预警数据传输服务
+ * 电力数据传输
  * Created by zhangwei(zhangwei@cetiti.com) on 2017-7-28.
  */
 public class ElectricityTransportation {
-    private static InternalLogger logger = InternalLoggerFactory.getInstance(ElectricityTransportation.class);
-    private static final int DEFAULT_PORT = 8899;
+    public static InternalLogger logger = InternalLoggerFactory.getInstance(ElectricityTransportation.class);
 
-    public static void main(String[] args) {
-        int port = getServerPort(args);
-        ElectricityServer server = new ElectricityServer();
-        server.start(port);
+    public void start(int port) {
+        EventLoopGroup bossGroup = new NioEventLoopGroup(1);
+        EventLoopGroup workerGroup = new NioEventLoopGroup();
+
+        try {
+            ServerBootstrap serverBootstrap = new ServerBootstrap();
+            serverBootstrap.option(ChannelOption.SO_BACKLOG, 128)
+                    .group(bossGroup, workerGroup)
+                    .channel(NioServerSocketChannel.class)
+                    .handler(new LoggingHandler(LogLevel.INFO))
+                    .childHandler(new ElectricityServerInitializer());
+
+            syncChannel(serverBootstrap, port);
+        } finally {
+            bossGroup.shutdownGracefully();
+            workerGroup.shutdownGracefully();
+        }
     }
 
-    private static int getServerPort(String[] args) {
-        int port = DEFAULT_PORT;
-        if (args != null && args.length > 0) {
-            try {
-                port = Integer.valueOf(args[0]);
-            } catch (NumberFormatException e) {
-                logger.info("端口范围为0-65535, 请使用默认端口8899");
-            }
+    private void syncChannel(ServerBootstrap serverBootstrap, int port) {
+        try {
+            ChannelFuture channelFuture = serverBootstrap.bind(port).sync();
+            logger.info("端口绑定成功");
+            channelFuture.channel().closeFuture().sync();
+        } catch (InterruptedException e) {
+           logger.error("服务器端口被使用");
         }
-        return port;
     }
 }

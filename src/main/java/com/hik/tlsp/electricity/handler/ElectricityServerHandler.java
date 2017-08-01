@@ -57,8 +57,9 @@ public class ElectricityServerHandler extends ChannelInboundHandlerAdapter {
                     String uri = request.uri();
                     if (StringUtils.equals(uri, "/insertTransportData")) {
                         ElectricityDetail electricityDetail = getElectricityDetailFromHttpRequest(request);
-                        saveElectricityDetail2DB(electricityDetail);
+                        //先进行推送，查找数据库中是否存在alarmRuldId,不存在则推送，如果存在判断是否在24小时内，24小时内不予推送
                         dataPushService.push(electricityDetail);
+                        saveElectricityDetail2DB(electricityDetail);
                     } else {
                         errorCode = HTTP_URL_INCORRECT;
                     }
