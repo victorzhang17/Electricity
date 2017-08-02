@@ -17,8 +17,7 @@ import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
 
-import static com.hik.tlsp.electricity.util.ErrorCode.REPEATE_ALARM_INFORMATION;
-import static com.hik.tlsp.electricity.util.ErrorCode.TIANQUE_WSDL_DECODER_FAIL;
+import static com.hik.tlsp.electricity.util.ErrorCode.*;
 
 /**
  * 中电海康--天阙推送预警信息服务实现
@@ -35,17 +34,18 @@ public class DataPushServiceImpl implements DataPushService {
         dataPushDao = new DataPushDaoImpl();
     }
 
-    public void push(ElectricityDetail electricityDetail) throws SQLException {
+    public int push(ElectricityDetail electricityDetail) throws SQLException {
         logger.info("开始推送");
         getPushServerConnection();
         XmlUtil xmlUtil = createXmlSource(electricityDetail);
 
         if (isAlarmWithinOneDay(electricityDetail.getAlarmRuleId())){
-            throw new ElectricityException("24小时内重复推送相同预警信息",REPEATE_ALARM_INFORMATION);
+            return REPEAT_ALARM_INFORMATION;
         }
 
         String result = issueBase.addIssuesNew(xmlUtil.getArgXml());
         logger.info("推送结束，result:" + result);
+        return TRANSPORT_AND_PUSH_DATA_SUCCESS;
     }
 
     private boolean isAlarmWithinOneDay(String alarmRuleId) throws SQLException {
@@ -112,7 +112,7 @@ public class DataPushServiceImpl implements DataPushService {
         xmlUtil.addArg("issueSmallTypeName", "消防安全");
         xmlUtil.addArg("sourcePerson", electricityDetail.getContactPersonName());
         xmlUtil.addArg("sourceMobile", electricityDetail.getPhone());
-        xmlUtil.addArg("issueContent", "内容");
+        xmlUtil.addArg("issueContent", constructIssueContent(electricityDetail));
         xmlUtil.addArg("recordingUrl", "");
         xmlUtil.addArg("serialNumber", dataPushDao.getNewIssueSerialNumFromDB());
         return xmlUtil;

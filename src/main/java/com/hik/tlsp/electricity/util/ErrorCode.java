@@ -10,5 +10,6 @@ public class ErrorCode {
     public static final int TIANQUE_WSDL_DECODER_FAIL = 60001;
     public static final int HTTP_METHOD_GET_INVALID = 60002;
     public static final int HTTP_URL_INCORRECT = 60003;
-    public static final int REPEATE_ALARM_INFORMATION = 60004;
+    public static final int REPEAT_ALARM_INFORMATION = 60004;
+    public static final int DATA_INSERT_ERROR = 60005;
 }

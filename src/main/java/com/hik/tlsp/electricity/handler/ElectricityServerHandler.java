@@ -33,7 +33,6 @@ public class ElectricityServerHandler extends ChannelInboundHandlerAdapter {
     private static final String CONTENT_LENGTH = "Content-Length";
 
     private FullHttpRequest request;
-
     private DataTransportService dataTransportService;
     private DataPushService dataPushService;
 
@@ -53,13 +52,14 @@ public class ElectricityServerHandler extends ChannelInboundHandlerAdapter {
                 if (request.method() == HttpMethod.GET) {
                     errorCode = HTTP_METHOD_GET_INVALID;
                 } else if (request.method() == HttpMethod.POST) {
-                    //可扩展，请求分发
                     String uri = request.uri();
                     if (StringUtils.equals(uri, "/insertTransportData")) {
                         ElectricityDetail electricityDetail = getElectricityDetailFromHttpRequest(request);
-                        //先进行推送，查找数据库中是否存在alarmRuldId,不存在则推送，如果存在判断是否在24小时内，24小时内不予推送
-                        dataPushService.push(electricityDetail);
-                        saveElectricityDetail2DB(electricityDetail);
+                        //查找数据库中是否存在alarmRuldId,不存在则推送，如果存在判断是否在24小时内，24小时内不予推送
+                        errorCode = dataPushService.push(electricityDetail);
+                        if (!dataTransportService.insert(electricityDetail)) {
+                            errorCode = DATA_INSERT_ERROR;
+                        }
                     } else {
                         errorCode = HTTP_URL_INCORRECT;
                     }
@@ -67,9 +67,9 @@ public class ElectricityServerHandler extends ChannelInboundHandlerAdapter {
             }
         } catch (ElectricityException e) {
             errorCode = e.getErrorCode();
-        } catch (SQLException ex){
+        } catch (SQLException ex) {
             errorCode = ex.getErrorCode();
-        }finally {
+        } finally {
             response2Client(ctx, errorCode);
         }
     }
@@ -89,15 +89,5 @@ public class ElectricityServerHandler extends ChannelInboundHandlerAdapter {
         ElectricityDetail electricityDetail = JSONObject.toJavaObject(json, ElectricityDetail.class);
 
         return electricityDetail;
-    }
-
-    private boolean saveElectricityDetail2DB(ElectricityDetail electricityDetail) throws SQLException {
-        boolean flag = false;
-
-        int i = dataTransportService.insert(electricityDetail);
-        if (i > 0) {
-            flag = true;
-        }
-        return flag;
     }
 }

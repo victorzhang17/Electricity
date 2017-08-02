@@ -38,4 +38,15 @@ public class CommonUtilTest {
         DataPushDao dataPushDao = new DataPushDaoImpl();
         System.out.println(dataPushDao.getTimeStampByAlarmRuleId("12"));
     }
+
+    @Test
+    public void testSqlExceptionErrorCode(){
+        SQLException sqlException = new SQLException();
+        System.out.println(sqlException.getErrorCode());
+    }
+
+    @Test
+    public void testGetTimeStamp(){
+        System.out.println(System.currentTimeMillis());
+    }
 }

@@ -13,7 +13,7 @@ import io.netty.util.internal.logging.InternalLogger;
 import io.netty.util.internal.logging.InternalLoggerFactory;
 
 /**
- * 电力数据传输
+ * 中恒--中电--大联动电力预警数据传输
  * Created by zhangwei(zhangwei@cetiti.com) on 2017-7-28.
  */
 public class ElectricityTransportation {

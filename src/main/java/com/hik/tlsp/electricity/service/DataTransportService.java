@@ -10,6 +10,5 @@ import java.sql.SQLException;
  */
 public interface DataTransportService {
 
-    int insert(ElectricityDetail electricityDetail) throws SQLException;
-
+    boolean insert(ElectricityDetail electricityDetail) throws SQLException;
 }
