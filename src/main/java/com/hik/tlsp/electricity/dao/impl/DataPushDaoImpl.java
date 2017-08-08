@@ -28,9 +28,8 @@ public class DataPushDaoImpl extends BaseDaoImpl implements DataPushDao {
         return "消" + newIssueSerialNum;
     }
 
-    public long getTimeStampByAlarmRuleId(String alarmRuleId) throws SQLException {
-        String strSql = "SELECT *  FROM ZHONGHENG_ELECTRICITY_WARN WHERE ALARM_RULE_ID='" + alarmRuleId + "'";
-
+    public long getNewestTimeStampByAlarmRuleId(String alarmRuleId) throws SQLException {
+        String strSql = "SELECT ALARM_TIME_STAMP  FROM ZHONGHENG_ELECTRICITY_WARN WHERE ALARM_RULE_ID='" + alarmRuleId + "' ORDER BY ALARM_TIME_STAMP DESC";
         long timeStamp = 0;
 
         try {
@@ -38,7 +37,6 @@ public class DataPushDaoImpl extends BaseDaoImpl implements DataPushDao {
             if (resultSet.next()) {
                 timeStamp = resultSet.getLong("ALARM_TIME_STAMP");
             }
-
         } finally {
             jdbcPoolUtil.close(resultSet, statement, connection);
         }

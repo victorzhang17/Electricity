@@ -1,7 +1,5 @@
 package com.hik.tlsp.electricity.util;
 
-import com.hik.tlsp.electricity.dao.DataPushDao;
-import com.hik.tlsp.electricity.dao.impl.DataPushDaoImpl;
 import org.junit.Test;
 
 import java.sql.SQLException;
@@ -35,8 +33,8 @@ public class CommonUtilTest {
 
     @Test
     public void testDate() throws SQLException {
-        DataPushDao dataPushDao = new DataPushDaoImpl();
-        System.out.println(dataPushDao.getTimeStampByAlarmRuleId("12"));
+//        DataPushDao dataPushDao = new DataPushDaoImpl();
+//        System.out.println(dataPushDao.getTimeStampByAlarmRuleId("12"));
     }
 
     @Test

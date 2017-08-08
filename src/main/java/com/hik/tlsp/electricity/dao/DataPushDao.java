@@ -9,7 +9,7 @@ import java.sql.SQLException;
 public interface DataPushDao {
     String getNewIssueSerialNumFromDB() throws SQLException;
 
-    long getTimeStampByAlarmRuleId(String alarmRuleId) throws SQLException;
+    long getNewestTimeStampByAlarmRuleId(String alarmRuleId) throws SQLException;
 
     String getOccurDateFromDB() throws SQLException;
 }

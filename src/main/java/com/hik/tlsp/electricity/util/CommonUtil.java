@@ -22,10 +22,6 @@ public class CommonUtil {
         return dateFormat.format(new Date());
     }
 
-    public static Timestamp getTimeStampObject(String timeStamp) {
-        return Timestamp.valueOf(timeStamp);
-    }
-
     public static Timestamp getTimeStampObject(long timeStamp) {
         Timestamp timestamp = new Timestamp(Long.valueOf(timeStamp + "000"));
         return timestamp;

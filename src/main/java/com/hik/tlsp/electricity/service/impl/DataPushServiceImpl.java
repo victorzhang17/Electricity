@@ -38,7 +38,7 @@ public class DataPushServiceImpl implements DataPushService {
         logger.info("大联动开始推送");
         getPushServerConnection();
         XmlUtil xmlUtil = createXmlSource(electricityDetail);
-        if (isAlarmWithinOneDay(electricityDetail.getAlarmRuleId())) {
+        if (isAlarmWithinOneDay(electricityDetail.getAlarmRuleId(), electricityDetail.getTimeStamp())) {
             return REPEAT_ALARM_INFORMATION;
         }
 
@@ -48,18 +48,18 @@ public class DataPushServiceImpl implements DataPushService {
         return TRANSPORT_AND_PUSH_DATA_SUCCESS;
     }
 
-    private boolean isAlarmWithinOneDay(String alarmRuleId) throws SQLException {
-        long alarmTimeStamp = dataPushDao.getTimeStampByAlarmRuleId(alarmRuleId);
+    private boolean isAlarmWithinOneDay(String alarmRuleId, long timeStamp) throws SQLException {
+        long newestAlarmTimeStampInDB = dataPushDao.getNewestTimeStampByAlarmRuleId(alarmRuleId);
 
         //数据库中不存在alarmRuleId,进行推送
-        if (alarmTimeStamp == 0) {
+        if (newestAlarmTimeStampInDB == 0) {
             return false;
         }
-        Date alarmDate = CommonUtil.getTimeStampObject(alarmTimeStamp);
-        Date nowDate = CommonUtil.getTimeStampObject(dataPushDao.getOccurDateFromDB());
+        Date alarmDateInDB = CommonUtil.getTimeStampObject(newestAlarmTimeStampInDB);
+        Date nowDate = CommonUtil.getTimeStampObject(timeStamp);
 
         Calendar alarmCalendar = Calendar.getInstance();
-        alarmCalendar.setTime(alarmDate);
+        alarmCalendar.setTime(alarmDateInDB);
         Calendar nowCalendar = Calendar.getInstance();
         nowCalendar.setTime(nowDate);
 
