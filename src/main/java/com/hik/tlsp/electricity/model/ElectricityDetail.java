@@ -16,8 +16,8 @@ public class ElectricityDetail {
     private long timeStamp;
     private String alarmName;
     private String desc;
-    private int alarmLevelCh;
-    private String alarmLevel;
+    private String alarmLevelCh;
+    private int alarmLevel;
     private String detailMetricItem;
     private String alarmRuleId;
     private String stationAddress;
@@ -25,4 +25,7 @@ public class ElectricityDetail {
     private String phone;
     private String lontitude;
     private String latititude;
+
+    //中电海康上传至大联动必须字段，存储到中电海康数据库
+    private String issueSerialNum;
 }

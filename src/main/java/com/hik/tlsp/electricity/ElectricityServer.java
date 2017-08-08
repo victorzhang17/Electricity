@@ -1,7 +1,7 @@
 package com.hik.tlsp.electricity;
 
-import io.netty.util.internal.logging.InternalLogger;
-import io.netty.util.internal.logging.InternalLoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 中恒——中电——天阙
@@ -9,8 +9,8 @@ import io.netty.util.internal.logging.InternalLoggerFactory;
  * Created by zhangwei(zhangwei@cetiti.com) on 2017-7-28.
  */
 public class ElectricityServer {
-    private static InternalLogger logger = InternalLoggerFactory.getInstance(ElectricityServer.class);
-    private static final int DEFAULT_PORT = 8899;
+    private static final Logger logger = LoggerFactory.getLogger(ElectricityServer.class);
+    private static final int DEFAULT_PORT = 8599;
 
     public static void main(String[] args) {
         int port = getServerPort(args);
@@ -24,7 +24,7 @@ public class ElectricityServer {
             try {
                 port = Integer.valueOf(args[0]);
             } catch (NumberFormatException e) {
-                logger.error("端口范围为0-65535, 请使用默认端口8899");
+                logger.error("端口范围为0-65535, 请使用默认端口{}", DEFAULT_PORT);
             }
         }
         return port;

@@ -9,5 +9,6 @@ import java.sql.SQLException;
  * Created by zhangwei(zhangwei@cetiti.com) on 2017-8-1.
  */
 public interface DataTransportDao {
+
     int insert(ElectricityDetail electricityDetail) throws SQLException;
 }

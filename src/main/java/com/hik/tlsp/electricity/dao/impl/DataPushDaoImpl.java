@@ -29,7 +29,8 @@ public class DataPushDaoImpl extends BaseDaoImpl implements DataPushDao {
     }
 
     public long getTimeStampByAlarmRuleId(String alarmRuleId) throws SQLException {
-        String strSql = "SELECT *  FROM ZHONGHENG_ELECTRICITY_WARN WHERE ALARM_RULE_ID=" + alarmRuleId;
+        String strSql = "SELECT *  FROM ZHONGHENG_ELECTRICITY_WARN WHERE ALARM_RULE_ID='" + alarmRuleId + "'";
+
         long timeStamp = 0;
 
         try {

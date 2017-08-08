@@ -4,8 +4,8 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceFactory;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.hik.tlsp.electricity.exception.ElectricityException;
-import io.netty.util.internal.logging.InternalLogger;
-import io.netty.util.internal.logging.InternalLoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,7 +20,7 @@ import static com.hik.tlsp.electricity.util.ErrorCode.DATASOURCE_SETTING_ERROR;
  * Created by zhangwei(zhangwei@cetiti.com) on 2017-7-29.
  */
 public class JdbcPoolUtil {
-    private static InternalLogger logger = InternalLoggerFactory.getInstance(JdbcPoolUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(JdbcPoolUtil.class);
 
     private static Properties properties = new Properties();
     private static DruidDataSource dataSource = null;
@@ -31,6 +31,7 @@ public class JdbcPoolUtil {
             properties.load(JdbcPoolUtil.class.getResourceAsStream(JDBC_LOCATION));
             dataSource = (DruidDataSource) DruidDataSourceFactory.createDataSource(properties);
         } catch (Exception e) {
+            logger.error("数据库连接池初始化配置错误，错误码：{}",DATASOURCE_SETTING_ERROR);
             throw new ElectricityException("数据库连接池初始化配置错误", DATASOURCE_SETTING_ERROR);
         }
     }

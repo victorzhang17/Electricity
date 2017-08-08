@@ -9,15 +9,15 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import io.netty.util.internal.logging.InternalLogger;
-import io.netty.util.internal.logging.InternalLoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 中恒--中电--大联动电力预警数据传输
  * Created by zhangwei(zhangwei@cetiti.com) on 2017-7-28.
  */
 public class ElectricityTransportation {
-    public static InternalLogger logger = InternalLoggerFactory.getInstance(ElectricityTransportation.class);
+    private static final Logger logger = LoggerFactory.getLogger(ElectricityTransportation.class);
 
     public void start(int port) {
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
@@ -41,10 +41,10 @@ public class ElectricityTransportation {
     private void syncChannel(ServerBootstrap serverBootstrap, int port) {
         try {
             ChannelFuture channelFuture = serverBootstrap.bind(port).sync();
-            logger.info("端口绑定成功");
+            logger.info("{}端口绑定成功", port);
             channelFuture.channel().closeFuture().sync();
         } catch (InterruptedException e) {
-           logger.error("服务器端口被使用");
+           logger.error("服务器{}端口被使用", port);
         }
     }
 }

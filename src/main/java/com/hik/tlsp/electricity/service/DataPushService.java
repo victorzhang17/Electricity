@@ -10,4 +10,6 @@ import java.sql.SQLException;
  */
 public interface DataPushService {
     int push(ElectricityDetail electricityDetail) throws SQLException;
+
+    String getIssueSerialNum() throws SQLException;
 }

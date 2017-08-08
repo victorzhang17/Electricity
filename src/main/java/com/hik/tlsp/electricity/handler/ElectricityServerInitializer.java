@@ -8,7 +8,7 @@ import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
 
 /**
- * 初始化netty服务器
+ * 初始化netty服务器，包括HTTP的request，response编码设置
  * Created by zhangwei(zhangwei@cetiti.com) on 2017-7-28.
  */
 public class ElectricityServerInitializer extends ChannelInitializer<SocketChannel> {

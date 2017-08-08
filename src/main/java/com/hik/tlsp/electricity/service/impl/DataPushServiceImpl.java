@@ -7,8 +7,8 @@ import com.hik.tlsp.electricity.model.ElectricityDetail;
 import com.hik.tlsp.electricity.service.DataPushService;
 import com.hik.tlsp.electricity.util.CommonUtil;
 import com.hik.tlsp.electricity.util.XmlUtil;
-import io.netty.util.internal.logging.InternalLogger;
-import io.netty.util.internal.logging.InternalLoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -24,26 +24,26 @@ import static com.hik.tlsp.electricity.util.ErrorCode.*;
  * Created by zhangwei(zhangwei@cetiti.com) on 2017-7-29.
  */
 public class DataPushServiceImpl implements DataPushService {
-    private static InternalLogger logger = InternalLoggerFactory.getInstance(DataPushServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(DataPushServiceImpl.class);
     private static final String ISSUE_URL = "http://115.236.101.205:8011/webService/wbsIssue?wsdl";
     private IssueBase issueBase = null;
 
     private DataPushDao dataPushDao;
 
-    public DataPushServiceImpl(){
+    public DataPushServiceImpl() {
         dataPushDao = new DataPushDaoImpl();
     }
 
     public int push(ElectricityDetail electricityDetail) throws SQLException {
-        logger.info("开始推送");
+        logger.info("大联动开始推送");
         getPushServerConnection();
         XmlUtil xmlUtil = createXmlSource(electricityDetail);
-
-        if (isAlarmWithinOneDay(electricityDetail.getAlarmRuleId())){
+        if (isAlarmWithinOneDay(electricityDetail.getAlarmRuleId())) {
             return REPEAT_ALARM_INFORMATION;
         }
 
         String result = issueBase.addIssuesNew(xmlUtil.getArgXml());
+        logger.warn("大联动推送信息：{}", xmlUtil.getArgXml());
         logger.info("推送结束，result:" + result);
         return TRANSPORT_AND_PUSH_DATA_SUCCESS;
     }
@@ -52,7 +52,7 @@ public class DataPushServiceImpl implements DataPushService {
         long alarmTimeStamp = dataPushDao.getTimeStampByAlarmRuleId(alarmRuleId);
 
         //数据库中不存在alarmRuleId,进行推送
-        if(alarmTimeStamp == 0){
+        if (alarmTimeStamp == 0) {
             return false;
         }
         Date alarmDate = CommonUtil.getTimeStampObject(alarmTimeStamp);
@@ -63,7 +63,7 @@ public class DataPushServiceImpl implements DataPushService {
         Calendar nowCalendar = Calendar.getInstance();
         nowCalendar.setTime(nowDate);
 
-        boolean isSameYear = (alarmCalendar.get(Calendar.YEAR)==nowCalendar.get(Calendar.YEAR));
+        boolean isSameYear = (alarmCalendar.get(Calendar.YEAR) == nowCalendar.get(Calendar.YEAR));
         boolean isSameMonth = (alarmCalendar.get(Calendar.MONTH) == nowCalendar.get(Calendar.MONTH));
         boolean isSameDayOfMonth = (alarmCalendar.get(Calendar.DAY_OF_MONTH) == nowCalendar.get(Calendar.DAY_OF_MONTH));
 
@@ -76,9 +76,9 @@ public class DataPushServiceImpl implements DataPushService {
         }
 
         if (!isIssueUrlValidate()) {
-            logger.error("大联动URL不可用");
+            logger.error("大联动URL：{}不可用", ISSUE_URL);
         } else {
-            logger.info("大联动URL正常连接，获取大连接开始");
+            logger.info("大联动URL：{}正常连接，获取大连接开始", ISSUE_URL);
             issueBase = new IssueBase();
             logger.info("获取大联动结束");
         }
@@ -114,8 +114,12 @@ public class DataPushServiceImpl implements DataPushService {
         xmlUtil.addArg("sourceMobile", electricityDetail.getPhone());
         xmlUtil.addArg("issueContent", constructIssueContent(electricityDetail));
         xmlUtil.addArg("recordingUrl", "");
-        xmlUtil.addArg("serialNumber", dataPushDao.getNewIssueSerialNumFromDB());
+        xmlUtil.addArg("serialNumber", getIssueSerialNum());
         return xmlUtil;
+    }
+
+    public String getIssueSerialNum() throws SQLException {
+        return dataPushDao.getNewIssueSerialNumFromDB();
     }
 
     //TODO 研究更加健壮的写法

@@ -10,7 +10,6 @@ import java.util.UUID;
  * Created by zhangwei(zhangwei@cetiti.com) on 2017-7-29.
  */
 public class CommonUtil {
-
     private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     public static String createUUID() {
@@ -31,4 +30,5 @@ public class CommonUtil {
         Timestamp timestamp = new Timestamp(Long.valueOf(timeStamp + "000"));
         return timestamp;
     }
+
 }

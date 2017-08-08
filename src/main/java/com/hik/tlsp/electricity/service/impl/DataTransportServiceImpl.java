@@ -19,10 +19,6 @@ public class DataTransportServiceImpl implements DataTransportService {
         dataTransportDao = new DataTransportDaoImpl();
     }
 
-    /**
-     * @param electricityDetail
-     * @return 插入成功返回true，失败返回false
-     */
     public boolean insert(ElectricityDetail electricityDetail) throws SQLException {
         int i = dataTransportDao.insert(electricityDetail);
         if (i > 0) {
