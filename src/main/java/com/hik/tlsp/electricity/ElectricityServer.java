@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ElectricityServer {
     private static final Logger logger = LoggerFactory.getLogger(ElectricityServer.class);
-    private static final int DEFAULT_PORT = 8599;
+    private static final int DEFAULT_PORT = 8899;
 
     public static void main(String[] args) {
         int port = getServerPort(args);

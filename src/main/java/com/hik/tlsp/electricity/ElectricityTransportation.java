@@ -41,10 +41,10 @@ public class ElectricityTransportation {
     private void syncChannel(ServerBootstrap serverBootstrap, int port) {
         try {
             ChannelFuture channelFuture = serverBootstrap.bind(port).sync();
-            logger.info("{}端口绑定成功", port);
+            logger.info("端口{}绑定成功", port);
             channelFuture.channel().closeFuture().sync();
         } catch (InterruptedException e) {
-           logger.error("服务器{}端口被使用", port);
+           logger.error("服务器端口{}被使用", port);
         }
     }
 }
