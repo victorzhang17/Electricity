@@ -2,6 +2,8 @@ package com.hik.tlsp.electricity.dao.impl;
 
 
 import com.hik.tlsp.electricity.dao.DataPushDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -11,6 +13,7 @@ import java.sql.Timestamp;
  * Created by zhangwei(zhangwei@cetiti.com) on 2017-8-1.
  */
 public class DataPushDaoImpl extends BaseDaoImpl implements DataPushDao {
+    private static final Logger logger = LoggerFactory.getLogger(DataPushDaoImpl.class);
 
     public String getNewIssueSerialNumFromDB() throws SQLException {
         String strSql = "SELECT NEW_ELEC_ISSUE_seq.Nextval FROM dual";
@@ -20,6 +23,7 @@ public class DataPushDaoImpl extends BaseDaoImpl implements DataPushDao {
             initJdbcConnectionForQuery(strSql);
             while (resultSet.next()) {
                 newIssueSerialNum = resultSet.getLong(1);
+                logger.warn("{} --> {}", strSql, newIssueSerialNum);
             }
         } finally {
             jdbcPoolUtil.close(resultSet, statement, connection);
@@ -37,6 +41,8 @@ public class DataPushDaoImpl extends BaseDaoImpl implements DataPushDao {
             if (resultSet.next()) {
                 timeStamp = resultSet.getLong("ALARM_TIME_STAMP");
             }
+            logger.warn("查询预警规则ID为：{}的SQL语句：{}", alarmRuleId, strSql);
+
         } finally {
             jdbcPoolUtil.close(resultSet, statement, connection);
         }
@@ -50,6 +56,7 @@ public class DataPushDaoImpl extends BaseDaoImpl implements DataPushDao {
             initJdbcConnectionForQuery(strSql);
             if (resultSet.next()) {
                 timeStamp = resultSet.getTimestamp("SYSDATE");
+                logger.warn("{} --> {}", strSql, timeStamp);
             }
         } finally {
             jdbcPoolUtil.close(resultSet, statement, connection);

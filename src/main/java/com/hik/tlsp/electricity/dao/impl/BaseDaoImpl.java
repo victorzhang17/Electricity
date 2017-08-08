@@ -17,7 +17,7 @@ public class BaseDaoImpl {
     protected ResultSet resultSet;
     protected DruidPooledConnection connection;
 
-    protected JdbcPoolUtil jdbcPoolUtil = JdbcPoolUtil.getDruidPoolUtilInstance();
+    protected static JdbcPoolUtil jdbcPoolUtil = JdbcPoolUtil.getDruidPoolUtilInstance();
 
     protected void initJdbcConnectionForQuery(String strSql) throws SQLException {
         connection = jdbcPoolUtil.getConnection();

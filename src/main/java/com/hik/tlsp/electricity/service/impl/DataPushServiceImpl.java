@@ -38,7 +38,9 @@ public class DataPushServiceImpl implements DataPushService {
         logger.info("大联动开始推送");
         getPushServerConnection();
         XmlUtil xmlUtil = createXmlSource(electricityDetail);
-        if (isAlarmWithinOneDay(electricityDetail.getAlarmRuleId(), electricityDetail.getTimeStamp())) {
+        String alarmRuleId = electricityDetail.getAlarmRuleId();
+        if (isAlarmWithinOneDay(alarmRuleId, electricityDetail.getTimeStamp())) {
+            logger.warn("预警规则ID为{}距离上一次推送时间在24小时内，不予推送");
             return REPEAT_ALARM_INFORMATION;
         }
 
@@ -114,7 +116,8 @@ public class DataPushServiceImpl implements DataPushService {
         xmlUtil.addArg("sourceMobile", electricityDetail.getPhone());
         xmlUtil.addArg("issueContent", constructIssueContent(electricityDetail));
         xmlUtil.addArg("recordingUrl", "");
-        xmlUtil.addArg("serialNumber", getIssueSerialNum());
+        xmlUtil.addArg("serialNumber", electricityDetail.getIssueSerialNum());
+//        xmlUtil.addArg("serialNumber", "消399");
         return xmlUtil;
     }
 

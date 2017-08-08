@@ -49,7 +49,7 @@ public class JdbcPoolUtil {
 
     public DruidPooledConnection getConnection() throws SQLException {
         DruidPooledConnection connection = dataSource.getConnection();
-        logger.info("数据源成功获得连接");
+        logger.info("从数据源中成功获得SQL连接");
         return connection;
     }
 
@@ -57,7 +57,7 @@ public class JdbcPoolUtil {
         if (connection != null) {
             connection.close();
         }
-        logger.info("数据库连接成功关闭");
+        logger.info("关闭连接");
     }
 
     public void close(PreparedStatement statement, Connection connection) throws SQLException {
