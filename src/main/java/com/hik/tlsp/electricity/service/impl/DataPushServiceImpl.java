@@ -17,6 +17,7 @@ import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
 
+import static com.hik.tlsp.electricity.util.ConstantUtil.*;
 import static com.hik.tlsp.electricity.util.ErrorCode.*;
 
 /**
@@ -105,7 +106,7 @@ public class DataPushServiceImpl implements DataPushService {
     private XmlUtil createXmlSource(ElectricityDetail electricityDetail) throws SQLException {
         XmlUtil xmlUtil = new XmlUtil();
         xmlUtil.initSendInfo();
-        xmlUtil.addArg("subject", "中恒--中电海康预警数据对接");
+        xmlUtil.addArg("subject", "中恒中电海康预警数据对接");
         xmlUtil.addArg("dePartmentNo", "330122003004");
         xmlUtil.addArg("lon", electricityDetail.getLontitude());
         xmlUtil.addArg("lat", electricityDetail.getLatititude());
@@ -115,9 +116,8 @@ public class DataPushServiceImpl implements DataPushService {
         xmlUtil.addArg("sourcePerson", electricityDetail.getContactPersonName());
         xmlUtil.addArg("sourceMobile", electricityDetail.getPhone());
         xmlUtil.addArg("issueContent", constructIssueContent(electricityDetail));
-        xmlUtil.addArg("recordingUrl", "");
+//        xmlUtil.addArg("recordingUrl", "");
         xmlUtil.addArg("serialNumber", electricityDetail.getIssueSerialNum());
-//        xmlUtil.addArg("serialNumber", "消399");
         return xmlUtil;
     }
 
@@ -129,27 +129,22 @@ public class DataPushServiceImpl implements DataPushService {
     private String constructIssueContent(ElectricityDetail electricityDetail) {
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append("站点名称：");
+        buffer.append(STATION_NAME);
         buffer.append(electricityDetail.getStationName());
-        buffer.append(",站点ID：");
-        buffer.append(electricityDetail.getStationId());
-        buffer.append(",被监控设备名称：");
+        buffer.append("；");
+        buffer.append(MONITORED_OBJECT_NAME);
         buffer.append(electricityDetail.getMonitoredObjectName());
-        buffer.append(",被监控设备ID：");
-        buffer.append(electricityDetail.getMonitoredObjectId());
-        buffer.append(",告警规则类型名称：");
+        buffer.append("；");
+        buffer.append(ALARM_NAME);
         buffer.append(electricityDetail.getAlarmName());
-        buffer.append(",告警规则类型描述：");
+        buffer.append("；");
+        buffer.append(DESC);
         buffer.append(electricityDetail.getDesc());
-        buffer.append(",告警级别文本描述：");
-        buffer.append(electricityDetail.getAlarmLevelCh());
-        buffer.append(",告警级别：");
-        buffer.append(electricityDetail.getAlarmLevel());
-        buffer.append(",告警情况：");
+        buffer.append("；");
+        buffer.append(DETAIL_METRIC_ITEM);
         buffer.append(electricityDetail.getDetailMetricItem());
-        buffer.append(",告警规则ID：");
-        buffer.append(electricityDetail.getAlarmRuleId());
-        buffer.append(",站点地址：");
+        buffer.append("；");
+        buffer.append(STATION_ADDRESS);
         buffer.append(electricityDetail.getStationAddress());
 
         return buffer.toString();

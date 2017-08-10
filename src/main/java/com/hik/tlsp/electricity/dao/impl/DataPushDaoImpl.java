@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
-import java.sql.Timestamp;
 
 /**
  * 数据推送DAO实现
@@ -50,18 +49,18 @@ public class DataPushDaoImpl extends BaseDaoImpl implements DataPushDao {
     }
 
     public String getOccurDateFromDB() throws SQLException {
-        String strSql = "SELECT sysdate  FROM dual";
-        Timestamp timeStamp = null;
+        String strSql = "SELECT TO_CHAR(SYSDATE,'YYYY-MM-DD HH24:MI:SS') AS STR_SYSDATE  FROM DUAL";
+        String strTimeStamp  = null;
         try {
             initJdbcConnectionForQuery(strSql);
             if (resultSet.next()) {
-                timeStamp = resultSet.getTimestamp("SYSDATE");
-                logger.warn("{} --> {}", strSql, timeStamp);
+                strTimeStamp = resultSet.getString("STR_SYSDATE");
+                logger.warn("{} --> {}", strSql, strTimeStamp);
             }
         } finally {
             jdbcPoolUtil.close(resultSet, statement, connection);
         }
-        return timeStamp.toString();
+        return strTimeStamp;
     }
 
 }
